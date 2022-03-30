@@ -41,7 +41,7 @@ class SharedMemory{
 // 생산자 스레드 - 사칙연산 랜덤 생성
 class ProducerThread extends Thread {
     SharedMemory sharedMemory;
-    String problem; // 계산할 수식
+    String [] problem; // 계산할 수식
     int termNum; // 항 개수
     int num; // 1~100 사이의 랜덤 숫자
     int tmpOperator; // 연산자 결정하는 숫자(1~4) - 1:+, 2:-, 3:*, 4:/
@@ -51,20 +51,20 @@ class ProducerThread extends Thread {
     ProducerThread(SharedMemory sharedMemory){
         // 공유 메모리 가져오기
         this.sharedMemory = sharedMemory;
-        problem = "";
-        termNum = (int)(Math.random()*3) + 3;
+        termNum = (int)(Math.random()*4) + 3;
+        problem = new String[termNum*2-1];
         operator = "";
     }
 
-    // 사칙연산 랜덤 생성
+    // 사칙연산 하나 랜덤 생성
     public void produceProblem(){
-        for(int i=0; i<termNum; i++){
+        for(int i=0; i<problem.length; i+=2){
             // 1~100 숫자 랜덤 생성
             num = (int)(Math.random()*100) + 1;
             // 수식에 숫자 연결
-            problem += num;
+            problem[i] = Integer.toString(num);
             // 연산자 결정
-            if(i != termNum-1){ // 마지막 항이 아닐 때만 연산자 생성
+            if(i != problem.length-1){ // 마지막 항이 아닐 때만 연산자 생성
                 tmpOperator = (int)(Math.random()*4) + 1;
                 switch (tmpOperator){
                     case 1:
@@ -77,8 +77,12 @@ class ProducerThread extends Thread {
                         operator = "/"; break;
                 }
                 // 수식에 연산자 연결
-                problem += operator;
+                problem[i+1] = operator;
             }
+        }
+
+        for(int i=0; i<problem.length; i++){
+            System.out.print(problem[i] + " ");
         }
     }
 
@@ -86,8 +90,8 @@ class ProducerThread extends Thread {
     public void run() {
         while(true) {
         try {
-            produceProblem();
-            sharedMemory.produce(problem);
+            produceProblem(); // 사칙연산 하나 생성
+            //sharedMemory.produce(problem);
             wait(); // 오류 안나게 하려고 넣어놓은 것
         } catch (InterruptedException e) {
             return;
@@ -102,6 +106,7 @@ class ConsumerThread extends Thread {
     public ConsumerThread(SharedMemory sharedMemory){
         // 공유 메모리 가져오기
         this.sharedMemory = sharedMemory;
+        //sharedMemory.buffer[]
     }
 
     @Override
