@@ -1,18 +1,38 @@
 package com.company;
 
+import java.util.Scanner;
+
 // 공유 메모리
 class SharedMemory{
     int in = 0;
     int out = 0;
-    String [] buffer;
+    String [][] buffer;
+    int calcNum; // 계산할 사칙연산 개수
     int bufferSize = 4;
 
-    // 생성자에서 버퍼 초기화
-    SharedMemory(){
-        buffer = new String[bufferSize];
+    // 생성자에서 버퍼, 사칙연산 개수 초기화
+    SharedMemory(int calcNum, int bufferSize){
+        this.calcNum = calcNum;
+        this.bufferSize = bufferSize;
+        buffer = new String[this.bufferSize][];
     }
 
-    synchronized void produce(String problem){
+    void printBuffer(){
+        for(int i=0; i<bufferSize; i++){
+            try{
+                for(int j=0; j<buffer[i].length; j++){
+                    System.out.print(buffer[i][j] + " ");
+                }
+            } catch(NullPointerException e){
+                System.out.print("null ");
+            }
+            finally {
+                System.out.println("\n----------");
+            }
+        }
+    }
+
+    synchronized void produce(String [] problem){
         if((in+1) % bufferSize == out){
             try{
                 wait();
@@ -20,10 +40,14 @@ class SharedMemory{
             catch(InterruptedException e){
                 return;
             }
-            buffer[in] = problem;
-            in++;
-            notify();
         }
+        buffer[in] = new String[problem.length];
+        for(int i=0; i<problem.length; i++){
+            buffer[in][i] = problem[i];
+        }
+        printBuffer();
+        in = (in+1) % bufferSize;
+        notify();
     }
 
     synchronized void consume(){
@@ -33,8 +57,11 @@ class SharedMemory{
             } catch(InterruptedException e){
                 return;
             }
-            notify();
         }
+        String [] result = buffer[out];
+        System.out.println(result);
+        out = (out+1) % bufferSize;
+        notify();
     }
 }
 
@@ -51,13 +78,14 @@ class ProducerThread extends Thread {
     ProducerThread(SharedMemory sharedMemory){
         // 공유 메모리 가져오기
         this.sharedMemory = sharedMemory;
-        termNum = (int)(Math.random()*4) + 3;
-        problem = new String[termNum*2-1];
         operator = "";
     }
 
     // 사칙연산 하나 랜덤 생성
     public void produceProblem(){
+        termNum = (int)(Math.random()*4) + 3;
+        problem = new String[termNum*2-1];
+
         for(int i=0; i<problem.length; i+=2){
             // 1~100 숫자 랜덤 생성
             num = (int)(Math.random()*100) + 1;
@@ -81,22 +109,25 @@ class ProducerThread extends Thread {
             }
         }
 
+        System.out.print("넘겨주기 전 : ");
         for(int i=0; i<problem.length; i++){
             System.out.print(problem[i] + " ");
         }
+        System.out.println();
     }
 
     @Override
     public void run() {
-        while(true) {
-        try {
-            produceProblem(); // 사칙연산 하나 생성
-            //sharedMemory.produce(problem);
-            wait(); // 오류 안나게 하려고 넣어놓은 것
-        } catch (InterruptedException e) {
-            return;
+        for(int i=0; i<sharedMemory.calcNum; i++) {
+            try {
+                sleep(200); // 오류 안나게 하려고 넣어놓은 것
+                produceProblem(); // 사칙연산 하나 생성
+                sharedMemory.produce(problem);
+            } catch (InterruptedException e) {
+                return;
+            }
         }
-    } }
+    }
 }
 
 // 소비자 스레드 - 사칙연산 계산
@@ -111,14 +142,31 @@ class ConsumerThread extends Thread {
 
     @Override
     public void run() {
-
+        for(int i=0; i<sharedMemory.calcNum; i++){
+            try{
+                sleep(100); // 오류 안나게 하려고 넣어놓은 것
+                sharedMemory.consume();
+            } catch(InterruptedException e){
+                return;
+            }
+        }
     }
 }
 
 public class IPC_sharedMemory {
 
     public static void main(String[] args) {
-        SharedMemory sm = new SharedMemory();
+        Scanner sc = new Scanner(System.in);
+
+        int calcNum; // 계산할 사칙연산 개수
+        int bufferSize; // 버퍼 사이즈
+
+        System.out.print("몇 개 계산?");
+        calcNum = sc.nextInt();
+        System.out.print("버퍼 몇 개?");
+        bufferSize = sc.nextInt();
+
+        SharedMemory sm = new SharedMemory(calcNum, bufferSize);
         ProducerThread pt = new ProducerThread(sm);
         ConsumerThread ct = new ConsumerThread(sm);
 
