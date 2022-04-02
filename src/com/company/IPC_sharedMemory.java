@@ -9,7 +9,7 @@ class SharedMemory{
     int out = 0;
     String [][] buffer;
     int calcNum; // 계산할 사칙연산 개수
-    int bufferSize = 4;
+    int bufferSize;
     String [] problem;
 
     // 생성자에서 버퍼, 사칙연산 개수 초기화
@@ -19,7 +19,7 @@ class SharedMemory{
         buffer = new String[this.bufferSize][];
     }
 
-    void printBuffer(){
+    synchronized void printBuffer(){
         for(int i=0; i<bufferSize; i++){
             try{
                 for(int j=0; j<buffer[i].length; j++){
@@ -61,11 +61,6 @@ class SharedMemory{
             }
         }
         problem = buffer[out];
-        System.out.println("결과");
-        for(int i=0; i<buffer[out].length; i++){
-            System.out.print(buffer[out][i] + " ");
-        }
-        System.out.println("\n");
 
         out = (out+1) % bufferSize;
         notify();
@@ -115,12 +110,13 @@ class ProducerThread extends Thread {
                 problem[i+1] = operator;
             }
         }
-
-        System.out.print("넘겨주기 전 : ");
-        for(int i=0; i<problem.length; i++){
-            System.out.print(problem[i] + " ");
+        synchronized (this) {
+            System.out.print("넘겨주기 전 : ");
+            for (int i = 0; i < problem.length; i++) {
+                System.out.print(problem[i] + " ");
+            }
+            System.out.println();
         }
-        System.out.println();
     }
 
     @Override
@@ -201,14 +197,20 @@ class ConsumerThread extends Thread {
         while(!strStack.isEmpty()){
             calc();
         }
-        System.out.println("\n답 : " + intStack.peek());
+        synchronized(this){
+            System.out.print("\t\t\t\t\t\t\t\t" + "답 : ");
+            for(int i=0; i<sharedMemory.problem.length; i++){
+                System.out.print(sharedMemory.problem[i] + " ");
+            }
+            System.out.println(" = " + intStack.peek());
+        }
     }
 
     @Override
     public void run() {
         for(int i=0; i<sharedMemory.calcNum; i++){
             try{
-                sleep(100); // 오류 안나게 하려고 넣어놓은 것
+                sleep(1000); // 오류 안나게 하려고 넣어놓은 것
                 sharedMemory.consume();
                 consumeProblem();
             } catch(InterruptedException e){
