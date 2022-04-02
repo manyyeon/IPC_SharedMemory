@@ -82,6 +82,12 @@ public class MyFrame extends JFrame {
         public void actionPerformed(ActionEvent e){
             System.out.println("setting");
             settingDialog.setVisible(true);
+
+            int bufferSize = Integer.parseInt(settingDialog.getInputBoundedBufferSize());
+            int equationNumber = Integer.parseInt(settingDialog.getInputEquationNumber());
+
+            System.out.println(bufferSize);
+            System.out.println(equationNumber);
         }
     }
 
@@ -98,7 +104,7 @@ class SettingDialog extends JDialog {
     JButton okButton = new JButton("확인");
 
     public SettingDialog(JFrame frame, String title){
-        super(frame, title, true);
+        super(frame, title, true); // modal dialog 만들기
         this.setLocation(750,500);
         setLayout(new BorderLayout());
 
@@ -120,5 +126,19 @@ class SettingDialog extends JDialog {
         });
     }
 
+    public String getInputBoundedBufferSize() {
+        if(inputBoundedBufferSize.getText().length() == 0){
+            return null;
+        } else{
+            return inputBoundedBufferSize.getText();
+        }
+    }
+    public String getInputEquationNumber() {
+        if(inputEquationNumber.getText().length() == 0){
+            return null;
+        } else{
+            return inputEquationNumber.getText();
+        }
+    }
 
 }
