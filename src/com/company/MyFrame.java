@@ -100,6 +100,7 @@ public class MyFrame extends JFrame {
         public void actionPerformed(ActionEvent e){
             System.out.println("start");
             producerThread.start();
+            consumerThread.start();
         }
     }
     // 초기화 리스너
@@ -139,7 +140,7 @@ public class MyFrame extends JFrame {
             // 공유메모리, 생산자, 소비자 스레드 생성
             sharedMemory = new SharedMemory(myFrame, equationNumber, bufferSize);
             producerThread = new ProducerThread(myFrame, sharedMemory, produceBox);
-            consumerThread = new ConsumerThread(myFrame, sharedMemory);
+            consumerThread = new ConsumerThread(myFrame, sharedMemory, consumeBox);
 
             contentPane.revalidate(); // 자식 컴포넌트 다시 배치
         }

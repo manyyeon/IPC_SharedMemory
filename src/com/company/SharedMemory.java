@@ -8,7 +8,7 @@ class SharedMemory{
     String [][] buffer; // 버퍼
     int equationNumber; // 계산할 사칙연산 개수
     int bufferSize;
-    String [] consumingProblem; // 지금 계산하고 있는 문제
+    //String [] consumingProblem; // 지금 계산하고 있는 문제
 
     // 생성자에서 버퍼, 사칙연산 개수 초기화
     SharedMemory(MyFrame myFrame, int equationNumber, int bufferSize){
@@ -36,17 +36,18 @@ class SharedMemory{
         notify();
     }
 
-    synchronized void consume(){
+    synchronized String [] consume(){
         if(in == out){
             try{
                 wait();
             } catch(InterruptedException e){
-                return;
+                System.out.println("");
             }
         }
-        consumingProblem = buffer[out];
+        String [] returnProblem = buffer[out];
 
         out = (out+1) % bufferSize;
         notify();
+        return returnProblem;
     }
 }

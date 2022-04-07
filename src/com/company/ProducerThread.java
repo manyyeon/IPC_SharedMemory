@@ -69,11 +69,13 @@ class ProducerThread extends Thread {
             try {
                 sleep(200); // 오류 안나게 하려고 넣어놓은 것
                 produceProblem(); // 사칙연산 하나 생성
+                // 화면의 produce 부분에 생성한 식 띄워주기
                 String tmpProblem = "";
                 for(int j=0; j < producingProblem.length; j++){
                     tmpProblem += producingProblem[j];
                 }
                 produceBox[i].setText(tmpProblem);
+
                 sharedMemory.produce(producingProblem);
             } catch (InterruptedException e) {
                 return;
