@@ -4,13 +4,15 @@ import java.util.Stack;
 
 // 소비자 스레드 - 사칙연산 계산
 class ConsumerThread extends Thread {
-    SharedMemory sharedMemory;
+    MyFrame myFrame; // 화면
+    SharedMemory sharedMemory; // 공유 메모리
     static Stack<Integer> intStack; // 숫자 스택
     static Stack<String> strStack; // 연산자 스택
 
     String symbol = "";
 
-    public ConsumerThread(SharedMemory sharedMemory){
+    public ConsumerThread(MyFrame myFrame, SharedMemory sharedMemory){
+        this.myFrame = myFrame;
         // 공유 메모리 가져오기
         this.sharedMemory = sharedMemory;
         //sharedMemory.buffer[]

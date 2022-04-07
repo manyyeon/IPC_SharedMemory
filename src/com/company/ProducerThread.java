@@ -1,8 +1,16 @@
 package com.company;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 // 생산자 스레드 - 사칙연산 랜덤 생성
 class ProducerThread extends Thread {
-    SharedMemory sharedMemory;
+    MyFrame myFrame; // 화면
+    SharedMemory sharedMemory; // 공유 메모리
+    JLabel [] produceBox; // 식 생산 공간
+
     String [] producingProblem; // 계산할 수식
     int termNum; // 항 개수
     int num; // 1~100 사이의 랜덤 숫자
@@ -10,9 +18,11 @@ class ProducerThread extends Thread {
     String operator; // 연산자
 
     // 생성자로 변수 초기화
-    ProducerThread(SharedMemory sharedMemory){
+    ProducerThread(MyFrame myFrame, SharedMemory sharedMemory, JLabel [] produceBox){
+        this.myFrame = myFrame;
         // 공유 메모리 가져오기
         this.sharedMemory = sharedMemory;
+        this.produceBox = produceBox;
         operator = "";
     }
 
@@ -44,13 +54,13 @@ class ProducerThread extends Thread {
             }
         }
 
-        synchronized (this) {
-            System.out.print("넘겨주기 전 : ");
-            for (int i = 0; i < producingProblem.length; i++) {
-                System.out.print(producingProblem[i] + " ");
-            }
-            System.out.println();
-        }
+//        synchronized (this) {
+//            System.out.print("넘겨주기 전 : ");
+//            for (int i = 0; i < producingProblem.length; i++) {
+//                System.out.print(producingProblem[i] + " ");
+//            }
+//            System.out.println();
+//        }
     }
 
     @Override
@@ -59,6 +69,11 @@ class ProducerThread extends Thread {
             try {
                 sleep(200); // 오류 안나게 하려고 넣어놓은 것
                 produceProblem(); // 사칙연산 하나 생성
+                String tmpProblem = "";
+                for(int j=0; j < producingProblem.length; j++){
+                    tmpProblem += producingProblem[j];
+                }
+                produceBox[i].setText(tmpProblem);
                 sharedMemory.produce(producingProblem);
             } catch (InterruptedException e) {
                 return;

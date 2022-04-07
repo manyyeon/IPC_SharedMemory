@@ -5,9 +5,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class MyFrame extends JFrame {
+public class MyFrame extends JFrame {
+    public static MyFrame myFrame;
+
     Container contentPane;
-    SettingDialog settingDialog;
+    SettingDialog settingDialog; // 설정창
+    SharedMemory sharedMemory; // 공유 메모리
+    ProducerThread producerThread; // 생산자 스레드
+    ConsumerThread consumerThread; // 소비자 스레드
+
     JPanel menuPanel = new JPanel();
     JPanel titlePanel = new JPanel();
     JPanel producePanel = new JPanel();
@@ -18,8 +24,10 @@ class MyFrame extends JFrame {
     String [] menuText = {"START", "INITIALIZATION", "SETTING"};
     JLabel [] titleLabel = new JLabel[3];
     String [] titleText = {"Producer", "Bounded Buffer", "Consumer"};
+
     int bufferSize = 3; // 버퍼 크기
     int equationNumber = 10; // 사칙연산 개수
+
     JLabel [] bufferBox; // 버퍼 공간
     JLabel [] produceBox; // 식 생산 공간
     JLabel [] consumeBox; // 식 계산해서 답 보여주는 공간
@@ -91,6 +99,7 @@ class MyFrame extends JFrame {
     class StartActionListener implements ActionListener {
         public void actionPerformed(ActionEvent e){
             System.out.println("start");
+            producerThread.start();
         }
     }
     // 초기화 리스너
@@ -126,7 +135,17 @@ class MyFrame extends JFrame {
                 producePanel.add(produceBox[i]);
                 consumePanel.add(consumeBox[i]);
             }
+
+            // 공유메모리, 생산자, 소비자 스레드 생성
+            sharedMemory = new SharedMemory(myFrame, equationNumber, bufferSize);
+            producerThread = new ProducerThread(myFrame, sharedMemory, produceBox);
+            consumerThread = new ConsumerThread(myFrame, sharedMemory);
+
             contentPane.revalidate(); // 자식 컴포넌트 다시 배치
         }
+    }
+
+    public static void main(String[] args){
+        myFrame = new MyFrame();
     }
 }

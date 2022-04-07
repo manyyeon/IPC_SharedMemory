@@ -2,6 +2,7 @@ package com.company;
 
 // 공유 메모리
 class SharedMemory{
+    MyFrame myFrame;
     int in = 0;
     int out = 0;
     String [][] buffer; // 버퍼
@@ -10,7 +11,8 @@ class SharedMemory{
     String [] consumingProblem; // 지금 계산하고 있는 문제
 
     // 생성자에서 버퍼, 사칙연산 개수 초기화
-    SharedMemory(int equationNumber, int bufferSize){
+    SharedMemory(MyFrame myFrame, int equationNumber, int bufferSize){
+        this.myFrame = myFrame;
         this.equationNumber = equationNumber;
         this.bufferSize = bufferSize;
         buffer = new String[this.bufferSize][];
