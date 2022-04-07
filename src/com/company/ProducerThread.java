@@ -65,9 +65,10 @@ class ProducerThread extends Thread {
 
     @Override
     public void run() {
+        int scrollLength = 0;
         for(int i = 0; i<sharedMemory.equationNumber; i++) {
             try {
-                sleep(200); // 오류 안나게 하려고 넣어놓은 것
+                sleep(150); // 오류 안나게 하려고 넣어놓은 것
                 produceProblem(); // 사칙연산 하나 생성
                 // 화면의 produce 부분에 생성한 식 띄워주기
                 String tmpProblem = "";
@@ -75,6 +76,13 @@ class ProducerThread extends Thread {
                     tmpProblem += producingProblem[j];
                 }
                 produceBox[i].setText(tmpProblem);
+
+                // 배경 색 변경
+                produceBox[i].setBackground(new Color(0,255,0));
+
+                // 자동 스크롤
+                scrollLength += 12;
+                myFrame.produceScroll.getVerticalScrollBar().setValue(myFrame.produceScroll.getVerticalScrollBar().getMinimum() + scrollLength);
 
                 sharedMemory.produce(producingProblem);
             } catch (InterruptedException e) {

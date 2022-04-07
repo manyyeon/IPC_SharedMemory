@@ -1,6 +1,7 @@
 package com.company;
 
 import javax.swing.*;
+import java.awt.*;
 
 // 공유 메모리
 class SharedMemory{
@@ -41,13 +42,16 @@ class SharedMemory{
         bufferBox[in].setText(tmpProblem);
 
         //printBuffer();
+        bufferBox[in].setBackground(new Color(237,237,237));
         in = (in+1) % bufferSize;
+        bufferBox[in].setBackground(new Color(0,255,0));
         notify();
     }
 
     synchronized String [] consume(){
         if(in == out){
             try{
+                bufferBox[in].setBackground(new Color(0,0,255));
                 wait();
             } catch(InterruptedException e){
                 System.out.println("");
@@ -55,7 +59,9 @@ class SharedMemory{
         }
         String [] returnProblem = buffer[out];
 
+        bufferBox[out].setBackground(new Color(237,237,237));
         out = (out+1) % bufferSize;
+        bufferBox[out].setBackground(new Color(255,0,0));
         notify();
         return returnProblem;
     }

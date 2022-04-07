@@ -1,16 +1,14 @@
 package com.company;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Stack;
+import java.awt.*;
 
 // 소비자 스레드 - 사칙연산 계산
 class ConsumerThread extends Thread {
     MyFrame myFrame; // 화면
     SharedMemory sharedMemory; // 공유 메모리
-    JLabel [] consumerBox; // 식 소비 공간
+    JLabel [] consumeBox; // 식 소비 공간
 
     String [] consumingProblem; // 계산하는 수식
     int ans; // 답
@@ -20,12 +18,12 @@ class ConsumerThread extends Thread {
 
     String symbol = "";
 
-    public ConsumerThread(MyFrame myFrame, SharedMemory sharedMemory, JLabel [] consumerBox){
+    public ConsumerThread(MyFrame myFrame, SharedMemory sharedMemory, JLabel [] consumeBox){
         this.myFrame = myFrame;
         // 공유 메모리 가져오기
         this.sharedMemory = sharedMemory;
         //sharedMemory.buffer[]
-        this.consumerBox = consumerBox;
+        this.consumeBox = consumeBox;
     }
 
     // 우선순위 반환 함수
@@ -90,9 +88,10 @@ class ConsumerThread extends Thread {
 
     @Override
     public void run() {
+        int scrollLength = 0;
         for(int i = 0; i<sharedMemory.equationNumber; i++){
             try{
-                sleep(1000); // 오류 안나게 하려고 넣어놓은 것
+                sleep(100); // 오류 안나게 하려고 넣어놓은 것
                 consumingProblem = sharedMemory.consume();
                 consumeProblem();
                 // 화면의 consume 부분에 계산결과 띄워주기
@@ -102,7 +101,14 @@ class ConsumerThread extends Thread {
                 }
                 tmpProblem += " = ";
                 tmpProblem += ans;
-                consumerBox[i].setText(tmpProblem);
+                consumeBox[i].setText(tmpProblem);
+
+                // 배경 색 변경
+                consumeBox[i].setBackground(new Color(0,255,0));
+
+                // 자동 스크롤
+                scrollLength += 12;
+                myFrame.consumeScroll.getVerticalScrollBar().setValue(myFrame.consumeScroll.getVerticalScrollBar().getMinimum() + scrollLength);
             } catch(InterruptedException e){
                 return;
             }

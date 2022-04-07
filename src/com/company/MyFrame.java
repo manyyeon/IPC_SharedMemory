@@ -14,11 +14,17 @@ public class MyFrame extends JFrame {
     ProducerThread producerThread; // 생산자 스레드
     ConsumerThread consumerThread; // 소비자 스레드
 
+    // 패널
     JPanel menuPanel = new JPanel();
     JPanel titlePanel = new JPanel();
     JPanel producePanel = new JPanel();
     JPanel bufferPanel = new JPanel();
     JPanel consumePanel = new JPanel();
+
+    // 스크롤팬
+    JScrollPane produceScroll;
+    JScrollPane bufferScroll;
+    JScrollPane consumeScroll;
 
     JButton [] menuButton = new JButton[3];
     String [] menuText = {"START", "INITIALIZATION", "SETTING"};
@@ -42,9 +48,7 @@ public class MyFrame extends JFrame {
         // contentPane 레이아웃 설정
         contentPane.setLayout(new BorderLayout(5,5));
 
-        producePanel.setPreferredSize(new Dimension(300, 400));
-        consumePanel.setPreferredSize(new Dimension(300, 400));
-        bufferPanel.setPreferredSize(new Dimension(300, 400));
+
 
         // panel 레이아웃 설정
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.X_AXIS)); // BoxLayout 수평으로
@@ -81,9 +85,19 @@ public class MyFrame extends JFrame {
         // 컨텐트팬에 패널 부착
         contentPane.add(menuPanel, BorderLayout.SOUTH); // 남쪽에 배치
         contentPane.add(titlePanel, BorderLayout.NORTH); // 북쪽에 배치
-        contentPane.add(new JScrollPane(producePanel), BorderLayout.WEST); // 서쪽에 배치, 스크롤팬에 삽입
-        contentPane.add(new JScrollPane(bufferPanel), BorderLayout.CENTER); // 중앙에 배치, 스크롤팬에 삽입
-        contentPane.add(new JScrollPane(consumePanel), BorderLayout.EAST); // 동쪽에 배치, 스크롤팬에 삽입
+
+        produceScroll = new JScrollPane(producePanel);
+        bufferScroll = new JScrollPane(bufferPanel);
+        consumeScroll = new JScrollPane(consumePanel);
+
+        produceScroll.setPreferredSize(new Dimension(300, 400));
+        consumeScroll.setPreferredSize(new Dimension(300, 400));
+        bufferScroll.setPreferredSize(new Dimension(300, 400));
+        contentPane.add(produceScroll, BorderLayout.WEST); // 서쪽에 배치, 스크롤팬에 삽입
+        contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치, 스크롤팬에 삽입
+        contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치, 스크롤팬에 삽입
+
+
 
         // settingDialog 생성
         settingDialog = new SettingDialog(this, "Buffer Size, Equation Number 설정");
@@ -126,8 +140,8 @@ public class MyFrame extends JFrame {
             bufferBox = new JLabel[bufferSize];
             for(int i=0; i<bufferSize; i++){
                 bufferBox[i] = new JLabel("(" + (i+1) + ") " + "buffer");
-                bufferBox[i].setOpaque(true); // 배경색이 출력되도록 불투명성 설정
-                bufferBox[i].setBackground(Color.YELLOW);
+                // 배경색이 출력되도록 불투명성 설정
+                bufferBox[i].setOpaque(true);
                 bufferBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
                 bufferPanel.add(bufferBox[i]);
             }
@@ -137,8 +151,13 @@ public class MyFrame extends JFrame {
             for(int i=0; i<equationNumber; i++){
                 produceBox[i] = new JLabel("(" + (i+1) + ") " + "produce");
                 consumeBox[i] = new JLabel("(" + (i+1) + ") " + "consume");
+                // 배경색이 출력되도록 불투명성 설정
+                produceBox[i].setOpaque(true);
+                consumeBox[i].setOpaque(true);
+                // 폰트 설정
                 produceBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
                 consumeBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
+                // 패널에 붙이기
                 producePanel.add(produceBox[i]);
                 consumePanel.add(consumeBox[i]);
             }
