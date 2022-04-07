@@ -20,9 +20,9 @@ class MyFrame extends JFrame {
     String [] titleText = {"Producer", "Bounded Buffer", "Consumer"};
     int bufferSize = 3; // 버퍼 크기
     int equationNumber = 10; // 사칙연산 개수
-    JButton [] bufferBox; // 버퍼 공간
-    JButton [] produceBox; // 식 생산 공간
-    JButton [] consumeBox; // 식 계산해서 답 보여주는 공간
+    JLabel [] bufferBox; // 버퍼 공간
+    JLabel [] produceBox; // 식 생산 공간
+    JLabel [] consumeBox; // 식 계산해서 답 보여주는 공간
 
     public MyFrame(){
         setTitle("Shared Memory IPC 통신"); // 윈도우 제목 설정
@@ -109,18 +109,18 @@ class MyFrame extends JFrame {
             equationNumber = Integer.parseInt(settingDialog.getInputEquationNumber());
 
             // buffer size만큼 공간 만들기
-            bufferBox = new JButton[bufferSize];
+            bufferBox = new JLabel[bufferSize];
             for(int i=0; i<bufferSize; i++){
-                bufferBox[i] = new JButton("(" + (i+1) + ") " + "buffer");
+                bufferBox[i] = new JLabel("(" + (i+1) + ") " + "buffer");
                 bufferBox[i].setPreferredSize(new Dimension(300, 200));
                 bufferPanel.add(bufferBox[i]);
             }
             // equation 개수만큼 공간 만들기
-            produceBox = new JButton[equationNumber];
-            consumeBox = new JButton[equationNumber];
+            produceBox = new JLabel[equationNumber];
+            consumeBox = new JLabel[equationNumber];
             for(int i=0; i<equationNumber; i++){
-                produceBox[i] = new JButton("(" + (i+1) + ") " + "produce");
-                consumeBox[i] = new JButton("(" + (i+1) + ") " + "consume");
+                produceBox[i] = new JLabel("(" + (i+1) + ") " + "produce");
+                consumeBox[i] = new JLabel("(" + (i+1) + ") " + "consume");
                 produceBox[i].setPreferredSize(new Dimension(300, 200));
                 consumeBox[i].setPreferredSize(new Dimension(300, 200));
                 producePanel.add(produceBox[i]);
