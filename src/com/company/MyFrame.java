@@ -42,6 +42,10 @@ public class MyFrame extends JFrame {
         // contentPane 레이아웃 설정
         contentPane.setLayout(new BorderLayout(5,5));
 
+        producePanel.setPreferredSize(new Dimension(300, 400));
+        consumePanel.setPreferredSize(new Dimension(300, 400));
+        bufferPanel.setPreferredSize(new Dimension(300, 400));
+
         // panel 레이아웃 설정
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.X_AXIS)); // BoxLayout 수평으로
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS)); // BoxLayout 수평으로
@@ -122,7 +126,9 @@ public class MyFrame extends JFrame {
             bufferBox = new JLabel[bufferSize];
             for(int i=0; i<bufferSize; i++){
                 bufferBox[i] = new JLabel("(" + (i+1) + ") " + "buffer");
-                bufferBox[i].setPreferredSize(new Dimension(300, 200));
+                bufferBox[i].setOpaque(true); // 배경색이 출력되도록 불투명성 설정
+                bufferBox[i].setBackground(Color.YELLOW);
+                bufferBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
                 bufferPanel.add(bufferBox[i]);
             }
             // equation 개수만큼 공간 만들기
@@ -131,14 +137,14 @@ public class MyFrame extends JFrame {
             for(int i=0; i<equationNumber; i++){
                 produceBox[i] = new JLabel("(" + (i+1) + ") " + "produce");
                 consumeBox[i] = new JLabel("(" + (i+1) + ") " + "consume");
-                produceBox[i].setPreferredSize(new Dimension(300, 200));
-                consumeBox[i].setPreferredSize(new Dimension(300, 200));
+                produceBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
+                consumeBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
                 producePanel.add(produceBox[i]);
                 consumePanel.add(consumeBox[i]);
             }
 
             // 공유메모리, 생산자, 소비자 스레드 생성
-            sharedMemory = new SharedMemory(myFrame, equationNumber, bufferSize);
+            sharedMemory = new SharedMemory(myFrame, equationNumber, bufferSize, bufferBox);
             producerThread = new ProducerThread(myFrame, sharedMemory, produceBox);
             consumerThread = new ConsumerThread(myFrame, sharedMemory, consumeBox);
 

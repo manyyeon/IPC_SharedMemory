@@ -1,20 +1,25 @@
 package com.company;
 
+import javax.swing.*;
+
 // 공유 메모리
 class SharedMemory{
     MyFrame myFrame;
     int in = 0;
     int out = 0;
+
+    JLabel[] bufferBox; // 버퍼 공간
     String [][] buffer; // 버퍼
     int equationNumber; // 계산할 사칙연산 개수
     int bufferSize;
     //String [] consumingProblem; // 지금 계산하고 있는 문제
 
     // 생성자에서 버퍼, 사칙연산 개수 초기화
-    SharedMemory(MyFrame myFrame, int equationNumber, int bufferSize){
+    SharedMemory(MyFrame myFrame, int equationNumber, int bufferSize, JLabel [] bufferBox){
         this.myFrame = myFrame;
         this.equationNumber = equationNumber;
         this.bufferSize = bufferSize;
+        this.bufferBox = bufferBox;
         buffer = new String[this.bufferSize][];
     }
 
@@ -28,9 +33,13 @@ class SharedMemory{
             }
         }
         buffer[in] = new String[problem.length];
+        String tmpProblem = "";
         for(int i=0; i<problem.length; i++){
             buffer[in][i] = problem[i];
+            tmpProblem += problem[i];
         }
+        bufferBox[in].setText(tmpProblem);
+
         //printBuffer();
         in = (in+1) % bufferSize;
         notify();
