@@ -51,9 +51,9 @@ public class MyFrame extends JFrame {
         // panel 레이아웃 설정
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.X_AXIS)); // BoxLayout 수평으로
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS)); // BoxLayout 수평으로
-        producePanel.setLayout(new BoxLayout(producePanel, BoxLayout.Y_AXIS));
-        bufferPanel.setLayout(new BoxLayout(bufferPanel, BoxLayout.Y_AXIS));
-        consumePanel.setLayout(new BoxLayout(consumePanel, BoxLayout.Y_AXIS));
+//        producePanel.setLayout(new BoxLayout(producePanel, BoxLayout.Y_AXIS));
+//        bufferPanel.setLayout(new BoxLayout(bufferPanel, BoxLayout.Y_AXIS));
+//        consumePanel.setLayout(new BoxLayout(consumePanel, BoxLayout.Y_AXIS));
 
         // menu 컴포넌트들 생성
         for(int i=0; i< menuButton.length; i++){
@@ -84,16 +84,18 @@ public class MyFrame extends JFrame {
         contentPane.add(menuPanel, BorderLayout.SOUTH); // 남쪽에 배치
         contentPane.add(titlePanel, BorderLayout.NORTH); // 북쪽에 배치
 
-        produceScroll = new JScrollPane(producePanel);
-        bufferScroll = new JScrollPane(bufferPanel);
-        consumeScroll = new JScrollPane(consumePanel);
+        addNewScreen();
 
-        produceScroll.setPreferredSize(new Dimension(300, 400));
-        consumeScroll.setPreferredSize(new Dimension(300, 400));
-        bufferScroll.setPreferredSize(new Dimension(300, 400));
-        contentPane.add(produceScroll, BorderLayout.WEST); // 서쪽에 배치, 스크롤팬에 삽입
-        contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치, 스크롤팬에 삽입
-        contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치, 스크롤팬에 삽입
+//        produceScroll = new JScrollPane(producePanel);
+//        bufferScroll = new JScrollPane(bufferPanel);
+//        consumeScroll = new JScrollPane(consumePanel);
+
+//        produceScroll.setPreferredSize(new Dimension(300, 400));
+//        consumeScroll.setPreferredSize(new Dimension(300, 400));
+//        bufferScroll.setPreferredSize(new Dimension(300, 400));
+//        contentPane.add(produceScroll, BorderLayout.WEST); // 서쪽에 배치, 스크롤팬에 삽입
+//        contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치, 스크롤팬에 삽입
+//        contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치, 스크롤팬에 삽입
 
         // settingDialog 생성
         settingDialog = new SettingDialog(this, "Buffer Size, Equation Number 설정");
@@ -108,6 +110,29 @@ public class MyFrame extends JFrame {
         setVisible(true);
     }
 
+    // producer, buffer, consume 화면 붙이기 함수
+    void addNewScreen(){
+        producePanel = new JPanel();
+        bufferPanel = new JPanel();
+        consumePanel = new JPanel();
+
+        producePanel.setLayout(new BoxLayout(producePanel, BoxLayout.Y_AXIS));
+        bufferPanel.setLayout(new BoxLayout(bufferPanel, BoxLayout.Y_AXIS));
+        consumePanel.setLayout(new BoxLayout(consumePanel, BoxLayout.Y_AXIS));
+
+        produceScroll = new JScrollPane(producePanel);
+        bufferScroll = new JScrollPane(bufferPanel);
+        consumeScroll = new JScrollPane(consumePanel);
+
+        produceScroll.setPreferredSize(new Dimension(300, 400));
+        consumeScroll.setPreferredSize(new Dimension(300, 400));
+        bufferScroll.setPreferredSize(new Dimension(300, 400));
+        // 컨텐트팬에 붙이기
+        contentPane.add(produceScroll, BorderLayout.WEST); // 서쪽에 배치
+        contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치
+        contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치
+    }
+
     // 이벤트 리스너
     // start 리스너
     class StartActionListener implements ActionListener {
@@ -119,22 +144,16 @@ public class MyFrame extends JFrame {
     // 초기화 리스너
     class InitializationActionListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            produceScroll = new JScrollPane(producePanel);
-            bufferScroll = new JScrollPane(bufferPanel);
-            consumeScroll = new JScrollPane(consumePanel);
-
-            produceScroll.setPreferredSize(new Dimension(300, 400));
-            consumeScroll.setPreferredSize(new Dimension(300, 400));
-            bufferScroll.setPreferredSize(new Dimension(300, 400));
-            contentPane.add(produceScroll, BorderLayout.WEST); // 서쪽에 배치, 스크롤팬에 삽입
-            contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치, 스크롤팬에 삽입
-            contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치, 스크롤팬에 삽입
+            addNewScreen();
+            contentPane.revalidate();
         }
     }
     // setting 리스너
     class SettingActionListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
             settingDialog.setVisible(true);
+
+            addNewScreen();
 
             bufferSize = Integer.parseInt(settingDialog.getInputBoundedBufferSize());
             equationNumber = Integer.parseInt(settingDialog.getInputEquationNumber());
