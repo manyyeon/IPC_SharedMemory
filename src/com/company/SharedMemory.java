@@ -13,7 +13,6 @@ class SharedMemory{
     String [][] buffer; // 버퍼
     int equationNumber; // 계산할 사칙연산 개수
     int bufferSize;
-    //String [] consumingProblem; // 지금 계산하고 있는 문제
 
     // 생성자에서 버퍼, 사칙연산 개수 초기화
     SharedMemory(MyFrame myFrame, int equationNumber, int bufferSize, JLabel [] bufferBox){
@@ -41,7 +40,6 @@ class SharedMemory{
         }
         bufferBox[in].setText(tmpProblem);
 
-        //printBuffer();
         bufferBox[in].setBackground(new Color(237,237,237));
         in = (in+1) % bufferSize;
         bufferBox[in].setBackground(new Color(0,255,0));

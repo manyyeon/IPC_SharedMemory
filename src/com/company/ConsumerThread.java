@@ -77,26 +77,19 @@ class ConsumerThread extends Thread {
             calc();
         }
         ans = intStack.peek();
-//        synchronized(this){
-//            System.out.print("\t\t\t\t\t\t\t\t" + "답 : ");
-//            for(int i = 0; i < consumingProblem.length; i++){
-//                System.out.print(consumingProblem[i] + " ");
-//            }
-//            System.out.println(" = " + intStack.peek());
-//        }
     }
 
     @Override
     public void run() {
         int scrollLength = 0;
-        for(int i = 0; i<sharedMemory.equationNumber; i++){
-            try{
-                sleep(100); // 오류 안나게 하려고 넣어놓은 것
+        for(int i = 0; i<sharedMemory.equationNumber; i++) {
+            try {
+                sleep(300); // 오류 안나게 하려고 넣어놓은 것
                 consumingProblem = sharedMemory.consume();
                 consumeProblem();
                 // 화면의 consume 부분에 계산결과 띄워주기
                 String tmpProblem = "";
-                for(int j=0; j < consumingProblem.length; j++){
+                for (int j = 0; j < consumingProblem.length; j++) {
                     tmpProblem += consumingProblem[j];
                 }
                 tmpProblem += " = ";
@@ -104,14 +97,16 @@ class ConsumerThread extends Thread {
                 consumeBox[i].setText(tmpProblem);
 
                 // 배경 색 변경
-                consumeBox[i].setBackground(new Color(0,255,0));
+                consumeBox[i].setBackground(new Color(0, 255, 0));
 
                 // 자동 스크롤
                 scrollLength += 12;
                 myFrame.consumeScroll.getVerticalScrollBar().setValue(myFrame.consumeScroll.getVerticalScrollBar().getMinimum() + scrollLength);
-            } catch(InterruptedException e){
+            } catch (InterruptedException e) {
                 return;
             }
         }
+        ResultDialog resultDialog = new ResultDialog(myFrame, "결과", sharedMemory.bufferSize, sharedMemory.equationNumber);
+        resultDialog.setVisible(true);
     }
 }

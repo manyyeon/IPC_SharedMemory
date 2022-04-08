@@ -31,8 +31,8 @@ public class MyFrame extends JFrame {
     JLabel [] titleLabel = new JLabel[3];
     String [] titleText = {"Producer", "Bounded Buffer", "Consumer"};
 
-    int bufferSize = 3; // 버퍼 크기
-    int equationNumber = 10; // 사칙연산 개수
+    int bufferSize; // 버퍼 크기
+    int equationNumber; // 사칙연산 개수
 
     JLabel [] bufferBox; // 버퍼 공간
     JLabel [] produceBox; // 식 생산 공간
@@ -47,8 +47,6 @@ public class MyFrame extends JFrame {
 
         // contentPane 레이아웃 설정
         contentPane.setLayout(new BorderLayout(5,5));
-
-
 
         // panel 레이아웃 설정
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.X_AXIS)); // BoxLayout 수평으로
@@ -97,8 +95,6 @@ public class MyFrame extends JFrame {
         contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치, 스크롤팬에 삽입
         contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치, 스크롤팬에 삽입
 
-
-
         // settingDialog 생성
         settingDialog = new SettingDialog(this, "Buffer Size, Equation Number 설정");
 
@@ -116,7 +112,6 @@ public class MyFrame extends JFrame {
     // start 리스너
     class StartActionListener implements ActionListener {
         public void actionPerformed(ActionEvent e){
-            System.out.println("start");
             producerThread.start();
             consumerThread.start();
         }
@@ -124,13 +119,12 @@ public class MyFrame extends JFrame {
     // 초기화 리스너
     class InitializationActionListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            System.out.println("initialization");
+            myFrame = new MyFrame();
         }
     }
     // setting 리스너
     class SettingActionListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            System.out.println("setting");
             settingDialog.setVisible(true);
 
             bufferSize = Integer.parseInt(settingDialog.getInputBoundedBufferSize());
@@ -139,7 +133,7 @@ public class MyFrame extends JFrame {
             // buffer size만큼 공간 만들기
             bufferBox = new JLabel[bufferSize];
             for(int i=0; i<bufferSize; i++){
-                bufferBox[i] = new JLabel("(" + (i+1) + ") " + "buffer");
+                bufferBox[i] = new JLabel("(" + (i+1) + ") ");
                 // 배경색이 출력되도록 불투명성 설정
                 bufferBox[i].setOpaque(true);
                 bufferBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
@@ -149,8 +143,8 @@ public class MyFrame extends JFrame {
             produceBox = new JLabel[equationNumber];
             consumeBox = new JLabel[equationNumber];
             for(int i=0; i<equationNumber; i++){
-                produceBox[i] = new JLabel("(" + (i+1) + ") " + "produce");
-                consumeBox[i] = new JLabel("(" + (i+1) + ") " + "consume");
+                produceBox[i] = new JLabel("(" + (i+1) + ") ");
+                consumeBox[i] = new JLabel("(" + (i+1) + ") ");
                 // 배경색이 출력되도록 불투명성 설정
                 produceBox[i].setOpaque(true);
                 consumeBox[i].setOpaque(true);
