@@ -119,7 +119,16 @@ public class MyFrame extends JFrame {
     // 초기화 리스너
     class InitializationActionListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            myFrame = new MyFrame();
+            produceScroll = new JScrollPane(producePanel);
+            bufferScroll = new JScrollPane(bufferPanel);
+            consumeScroll = new JScrollPane(consumePanel);
+
+            produceScroll.setPreferredSize(new Dimension(300, 400));
+            consumeScroll.setPreferredSize(new Dimension(300, 400));
+            bufferScroll.setPreferredSize(new Dimension(300, 400));
+            contentPane.add(produceScroll, BorderLayout.WEST); // 서쪽에 배치, 스크롤팬에 삽입
+            contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치, 스크롤팬에 삽입
+            contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치, 스크롤팬에 삽입
         }
     }
     // setting 리스너

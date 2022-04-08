@@ -29,7 +29,6 @@ class SettingDialog extends JDialog {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("확인");
                 setVisible(false);
             }
         });
@@ -39,14 +38,18 @@ class SettingDialog extends JDialog {
         if(inputBoundedBufferSize.getText().length() == 0){
             return null;
         } else{
-            return inputBoundedBufferSize.getText();
+            String tmpText = inputBoundedBufferSize.getText();
+            inputBoundedBufferSize.setText("");
+            return tmpText;
         }
     }
     public String getInputEquationNumber() {
         if(inputEquationNumber.getText().length() == 0){
             return null;
         } else{
-            return inputEquationNumber.getText();
+            String tmpText = inputEquationNumber.getText();
+            inputEquationNumber.setText("");
+            return tmpText;
         }
     }
 }
