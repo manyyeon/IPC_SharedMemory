@@ -11,9 +11,9 @@ class ConsumerThread extends Thread {
     JLabel [] consumeBox; // 식 소비 공간
 
     String [] consumingProblem; // 계산하는 수식
-    int ans; // 답
+    double ans; // 답
 
-    static Stack<Integer> intStack; // 숫자 스택
+    static Stack<Double> doubleStack; // 숫자 스택
     static Stack<String> strStack; // 연산자 스택
 
     String symbol = "";
@@ -41,30 +41,30 @@ class ConsumerThread extends Thread {
 
     // 계산
     public static void calc(){
-        int num2 = intStack.pop();
-        int num1 = intStack.pop();
+        double num2 = doubleStack.pop();
+        double num1 = doubleStack.pop();
         String op = strStack.pop();
 
         switch(op){
             case "+":
-                intStack.push(num1+num2); break;
+                doubleStack.push(num1+num2); break;
             case "-":
-                intStack.push(num1-num2); break;
+                doubleStack.push(num1-num2); break;
             case "*":
-                intStack.push(num1*num2); break;
+                doubleStack.push(num1*num2); break;
             case "/":
-                intStack.push(num1/num2); break;
+                doubleStack.push(num1/num2); break;
         }
     }
 
     public void consumeProblem(){
         strStack = new Stack<String>();
-        intStack = new Stack<Integer>();
+        doubleStack = new Stack<Double>();
 
         for(int i = 0; i< consumingProblem.length; i++){
             symbol = consumingProblem[i];
             if(symbol != "+" && symbol != "-" && symbol != "*" && symbol != "/"){
-                intStack.push(Integer.parseInt(symbol));
+                doubleStack.push(Double.parseDouble(symbol));
             }
             else{
                 while(!strStack.isEmpty() && getPriority(symbol) <= getPriority(strStack.peek())){
@@ -76,7 +76,7 @@ class ConsumerThread extends Thread {
         while(!strStack.isEmpty()){
             calc();
         }
-        ans = intStack.peek();
+        ans = doubleStack.peek();
     }
 
     @Override
