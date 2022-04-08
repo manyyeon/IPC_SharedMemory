@@ -53,14 +53,6 @@ class ProducerThread extends Thread {
                 producingProblem[i+1] = operator;
             }
         }
-
-//        synchronized (this) {
-//            System.out.print("넘겨주기 전 : ");
-//            for (int i = 0; i < producingProblem.length; i++) {
-//                System.out.print(producingProblem[i] + " ");
-//            }
-//            System.out.println();
-//        }
     }
 
     @Override
@@ -68,10 +60,13 @@ class ProducerThread extends Thread {
         int scrollLength = 0;
         for(int i = 0; i<sharedMemory.equationNumber; i++) {
             try {
-                sleep(150); // 오류 안나게 하려고 넣어놓은 것
+                sleep(200); // 시간 지연
                 produceProblem(); // 사칙연산 하나 생성
                 // 화면의 produce 부분에 생성한 식 띄워주기
                 String tmpProblem = "";
+                tmpProblem += "(";
+                tmpProblem += i+1;
+                tmpProblem += ") ";
                 for(int j=0; j < producingProblem.length; j++){
                     tmpProblem += producingProblem[j];
                 }
@@ -81,7 +76,7 @@ class ProducerThread extends Thread {
                 produceBox[i].setBackground(new Color(0,255,0));
 
                 // 자동 스크롤
-                scrollLength += 12;
+                scrollLength += 20;
                 myFrame.produceScroll.getVerticalScrollBar().setValue(myFrame.produceScroll.getVerticalScrollBar().getMinimum() + scrollLength);
 
                 sharedMemory.produce(producingProblem);

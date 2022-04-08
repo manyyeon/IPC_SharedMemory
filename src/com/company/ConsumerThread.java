@@ -84,11 +84,14 @@ class ConsumerThread extends Thread {
         int scrollLength = 0;
         for(int i = 0; i<sharedMemory.equationNumber; i++) {
             try {
-                sleep(300); // 오류 안나게 하려고 넣어놓은 것
+                sleep(100); // 시간 지연
                 consumingProblem = sharedMemory.consume();
                 consumeProblem();
                 // 화면의 consume 부분에 계산결과 띄워주기
                 String tmpProblem = "";
+                tmpProblem += "(";
+                tmpProblem += i+1;
+                tmpProblem += ") ";
                 for (int j = 0; j < consumingProblem.length; j++) {
                     tmpProblem += consumingProblem[j];
                 }
@@ -100,7 +103,7 @@ class ConsumerThread extends Thread {
                 consumeBox[i].setBackground(new Color(0, 255, 0));
 
                 // 자동 스크롤
-                scrollLength += 12;
+                scrollLength += 20;
                 myFrame.consumeScroll.getVerticalScrollBar().setValue(myFrame.consumeScroll.getVerticalScrollBar().getMinimum() + scrollLength);
             } catch (InterruptedException e) {
                 return;
