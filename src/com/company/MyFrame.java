@@ -6,30 +6,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MyFrame extends JFrame {
+    // myFrame을 static 변수로 선언
     public static MyFrame myFrame;
 
-    Container contentPane;
+    Container contentPane; // 컨텐트팬
     SettingDialog settingDialog; // 설정창
     SharedMemory sharedMemory; // 공유 메모리
     ProducerThread producerThread; // 생산자 스레드
     ConsumerThread consumerThread; // 소비자 스레드
 
     // 패널
-    JPanel menuPanel = new JPanel();
-    JPanel titlePanel = new JPanel();
-    JPanel producePanel = new JPanel();
-    JPanel bufferPanel = new JPanel();
-    JPanel consumePanel = new JPanel();
+    JPanel menuPanel = new JPanel(); // 메뉴
+    JPanel titlePanel = new JPanel(); // 제목
+    JPanel producePanel = new JPanel(); // 생산 공간
+    JPanel bufferPanel = new JPanel(); // 버퍼 공간
+    JPanel consumePanel = new JPanel(); // 소비 공간
 
     // 스크롤팬
-    JScrollPane produceScroll;
-    JScrollPane bufferScroll;
-    JScrollPane consumeScroll;
+    JScrollPane produceScroll; // 생산 스크롤
+    JScrollPane bufferScroll; // 버퍼 스크롤
+    JScrollPane consumeScroll; // 소비 스크롤
 
-    JButton [] menuButton = new JButton[3];
-    String [] menuText = {"START", "INITIALIZATION", "SETTING"};
-    JLabel [] titleLabel = new JLabel[3];
-    String [] titleText = {"Producer", "Bounded Buffer", "Consumer"};
+    JButton [] menuButton = new JButton[3]; // 메뉴 버튼 3개
+    String [] menuText = {"START", "INITIALIZATION", "SETTING"}; // 텍스트를 배열에 넣어두고 반복문으로 버튼 이름 넣어주려고 함
+    JLabel [] titleLabel = new JLabel[3]; // 제목 버튼 3개
+    String [] titleText = {"Producer", "Bounded Buffer", "Consumer"}; // 텍스트를 배열에 넣어두고 반복문으로 제목 이름 넣어주려고 함
 
     int bufferSize; // 버퍼 크기
     int equationNumber; // 사칙연산 개수
@@ -51,12 +52,9 @@ public class MyFrame extends JFrame {
         // panel 레이아웃 설정
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.X_AXIS)); // BoxLayout 수평으로
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS)); // BoxLayout 수평으로
-//        producePanel.setLayout(new BoxLayout(producePanel, BoxLayout.Y_AXIS));
-//        bufferPanel.setLayout(new BoxLayout(bufferPanel, BoxLayout.Y_AXIS));
-//        consumePanel.setLayout(new BoxLayout(consumePanel, BoxLayout.Y_AXIS));
 
         // menu 컴포넌트들 생성
-        for(int i=0; i< menuButton.length; i++){
+        for(int i=0; i < menuButton.length; i++){
             menuButton[i] = new JButton(menuText[i]);
         }
 
@@ -84,18 +82,8 @@ public class MyFrame extends JFrame {
         contentPane.add(menuPanel, BorderLayout.SOUTH); // 남쪽에 배치
         contentPane.add(titlePanel, BorderLayout.NORTH); // 북쪽에 배치
 
+        // producer, buffer, consume 화면 붙이기
         addNewScreen();
-
-//        produceScroll = new JScrollPane(producePanel);
-//        bufferScroll = new JScrollPane(bufferPanel);
-//        consumeScroll = new JScrollPane(consumePanel);
-
-//        produceScroll.setPreferredSize(new Dimension(300, 400));
-//        consumeScroll.setPreferredSize(new Dimension(300, 400));
-//        bufferScroll.setPreferredSize(new Dimension(300, 400));
-//        contentPane.add(produceScroll, BorderLayout.WEST); // 서쪽에 배치, 스크롤팬에 삽입
-//        contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치, 스크롤팬에 삽입
-//        contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치, 스크롤팬에 삽입
 
         // settingDialog 생성
         settingDialog = new SettingDialog(this, "Buffer Size, Equation Number 설정");
@@ -112,22 +100,27 @@ public class MyFrame extends JFrame {
 
     // producer, buffer, consume 화면 붙이기 함수
     void addNewScreen(){
+        // 패널 새로 생성
         producePanel = new JPanel();
         bufferPanel = new JPanel();
         consumePanel = new JPanel();
 
+        // 레이아웃 설정
         producePanel.setLayout(new BoxLayout(producePanel, BoxLayout.Y_AXIS));
         bufferPanel.setLayout(new BoxLayout(bufferPanel, BoxLayout.Y_AXIS));
         consumePanel.setLayout(new BoxLayout(consumePanel, BoxLayout.Y_AXIS));
 
+        // 스크롤팬 생성
         produceScroll = new JScrollPane(producePanel);
         bufferScroll = new JScrollPane(bufferPanel);
         consumeScroll = new JScrollPane(consumePanel);
 
+        // 스크롤팬 사이즈 설정
         produceScroll.setPreferredSize(new Dimension(300, 400));
         consumeScroll.setPreferredSize(new Dimension(300, 400));
         bufferScroll.setPreferredSize(new Dimension(300, 400));
-        // 컨텐트팬에 붙이기
+
+        // 스크롤팬을 컨텐트팬에 붙이기
         contentPane.add(produceScroll, BorderLayout.WEST); // 서쪽에 배치
         contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치
         contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치
@@ -137,40 +130,49 @@ public class MyFrame extends JFrame {
     // start 리스너
     class StartActionListener implements ActionListener {
         public void actionPerformed(ActionEvent e){
-            producerThread.start();
-            consumerThread.start();
+            producerThread.start(); // 생산자 스레드 시작
+            consumerThread.start(); // 소비자 스레드 시작
         }
     }
     // 초기화 리스너
     class InitializationActionListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
+            // producer, buffer, consumer 화면 새로 붙이기
             addNewScreen();
+            // 자식 컴포넌트 재배치
             contentPane.revalidate();
         }
     }
     // setting 리스너
     class SettingActionListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
+            // 다이얼로그 보이게 하기
             settingDialog.setVisible(true);
 
+            // producer, buffer, consumer 화면 새로 붙이기
             addNewScreen();
 
-            bufferSize = Integer.parseInt(settingDialog.getInputBoundedBufferSize());
-            equationNumber = Integer.parseInt(settingDialog.getInputEquationNumber());
+            // 설정창에서 bufferSize와 equationNumber 받아와서 변수에 설정해주기
+            bufferSize = Integer.parseInt(settingDialog.getInputBoundedBufferSize()); // bufferSize 받아오는 함수 호출
+            equationNumber = Integer.parseInt(settingDialog.getInputEquationNumber()); // equationNumber 받아오는 함수 호출
 
             // buffer size만큼 공간 만들기
             bufferBox = new JLabel[bufferSize];
             for(int i=0; i<bufferSize; i++){
+                // 번호 출력해주기
                 bufferBox[i] = new JLabel("(" + (i+1) + ") ");
                 // 배경색이 출력되도록 불투명성 설정
                 bufferBox[i].setOpaque(true);
+                // 폰트 설정
                 bufferBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
+                // 패널에 붙이기
                 bufferPanel.add(bufferBox[i]);
             }
             // equation 개수만큼 공간 만들기
             produceBox = new JLabel[equationNumber];
             consumeBox = new JLabel[equationNumber];
             for(int i=0; i<equationNumber; i++){
+                // 번호 출력해주기
                 produceBox[i] = new JLabel("(" + (i+1) + ") ");
                 consumeBox[i] = new JLabel("(" + (i+1) + ") ");
                 // 배경색이 출력되도록 불투명성 설정
@@ -185,15 +187,18 @@ public class MyFrame extends JFrame {
             }
 
             // 공유메모리, 생산자, 소비자 스레드 생성
+            // 여기서 myFrame을 매개변수로 전달해주기 위해서 myFrame을 static 변수로 선언해놓음
             sharedMemory = new SharedMemory(myFrame, equationNumber, bufferSize, bufferBox);
             producerThread = new ProducerThread(myFrame, sharedMemory, produceBox);
             consumerThread = new ConsumerThread(myFrame, sharedMemory, consumeBox);
 
-            contentPane.revalidate(); // 자식 컴포넌트 다시 배치
+            // 자식 컴포넌트 다시 배치
+            contentPane.revalidate();
         }
     }
 
     public static void main(String[] args){
+        // myFrame 생성하면서 프로그램 시작
         myFrame = new MyFrame();
     }
 }

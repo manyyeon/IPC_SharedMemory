@@ -2,8 +2,6 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 // 생산자 스레드 - 사칙연산 랜덤 생성
 class ProducerThread extends Thread {
@@ -15,29 +13,34 @@ class ProducerThread extends Thread {
     int termNum; // 항 개수
     int num; // 1~100 사이의 랜덤 숫자
     int tmpOperator; // 연산자 결정하는 숫자(1~4) - 1:+, 2:-, 3:*, 4:/
-    String operator; // 연산자
+    String operator = ""; // 연산자
 
     // 생성자로 변수 초기화
     ProducerThread(MyFrame myFrame, SharedMemory sharedMemory, JLabel [] produceBox){
+        // 화면 가져오기
         this.myFrame = myFrame;
         // 공유 메모리 가져오기
         this.sharedMemory = sharedMemory;
+        // 식 생산 공간 가져오기
         this.produceBox = produceBox;
-        operator = "";
     }
 
     // 사칙연산 하나 랜덤 생성
     public void produceProblem(){
+        // 항 개수 랜덤으로 설정하기
         termNum = (int)(Math.random()*4) + 3;
+        // 항 개수와 연산자 개수만큼 생산할 사칙연산 공간 생성
         producingProblem = new String[termNum*2-1];
 
+        // 사칙연산 숫자와 연산자 랜덤으로 뽑아서 연결해주기
         for(int i = 0; i< producingProblem.length; i+=2){
             // 1~100 숫자 랜덤 생성
             num = (int)(Math.random()*100) + 1;
             // 수식에 숫자 연결
             producingProblem[i] = Integer.toString(num);
-            // 연산자 결정
+            // 연산자 랜덤으로 설정
             if(i != producingProblem.length-1){ // 마지막 항이 아닐 때만 연산자 생성
+                // 연산자 랜덤으로 뽑기
                 tmpOperator = (int)(Math.random()*4) + 1;
                 switch (tmpOperator){
                     case 1:
@@ -55,30 +58,40 @@ class ProducerThread extends Thread {
         }
     }
 
+    // 스레드 코드
+    // start() 메소드가 호출된 후 스레드가 실행을 시작하는 메소드
+    // 이 메소드가 종료하면 스레드도 종료됨
     @Override
     public void run() {
+        // 자동 스크롤을 구현하기 위한 변수
+        // scrollLength 값을 올려주면서 스크롤 위치값에 설정해줌
         int scrollLength = 0;
+        // 설정된 식 개수만큼 다 만들 때까지 반복
         for(int i = 0; i<sharedMemory.equationNumber; i++) {
             try {
                 sleep(200); // 시간 지연
                 produceProblem(); // 사칙연산 하나 생성
                 // 화면의 produce 부분에 생성한 식 띄워주기
+                // 몇번째 식인지 번호로 표시
                 String tmpProblem = "";
                 tmpProblem += "(";
-                tmpProblem += i+1;
+                tmpProblem += i+1; // 몇번째 사칙연산 생성인건지 표시
                 tmpProblem += ") ";
+                // 생산한 랜덤 식을 tmpProblem에 연결
                 for(int j=0; j < producingProblem.length; j++){
                     tmpProblem += producingProblem[j];
                 }
+                // 생산 공간 해당 번호 문자열을 tmpProblem으로 변경
                 produceBox[i].setText(tmpProblem);
 
-                // 배경 색 변경
+                // 배경 색 변경(생산한 식 초록색으로 칠해주기)
                 produceBox[i].setBackground(new Color(0,255,0));
 
                 // 자동 스크롤
                 scrollLength += 20;
                 myFrame.produceScroll.getVerticalScrollBar().setValue(myFrame.produceScroll.getVerticalScrollBar().getMinimum() + scrollLength);
 
+                // 공유 메모리에 여기서 만든 사칙연산 전달
                 sharedMemory.produce(producingProblem);
             } catch (InterruptedException e) {
                 return;
