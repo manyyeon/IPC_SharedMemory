@@ -35,6 +35,10 @@ public class MyFrame extends JFrame {
     int bufferSize; // 버퍼 크기
     int equationNumber; // 사칙연산 개수
 
+    JPanel [] bufferOuterBox; // bufferBox를 담는 패널
+    JPanel [] produceOuterBox; // produceBox를 담는 패널
+    JPanel [] consumeOuterBox; // consumeBox를 담는 패널
+
     JLabel [] bufferBox; // 버퍼 공간
     JLabel [] produceBox; // 식 생산 공간
     JLabel [] consumeBox; // 식 계산해서 답 보여주는 공간
@@ -117,13 +121,13 @@ public class MyFrame extends JFrame {
 
         // 스크롤팬 사이즈 설정
         produceScroll.setPreferredSize(new Dimension(300, 400));
-        consumeScroll.setPreferredSize(new Dimension(300, 400));
+        consumeScroll.setPreferredSize(new Dimension(400, 400));
         bufferScroll.setPreferredSize(new Dimension(300, 400));
 
         // 스크롤팬을 컨텐트팬에 붙이기
         contentPane.add(produceScroll, BorderLayout.WEST); // 서쪽에 배치
-        contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치
         contentPane.add(consumeScroll, BorderLayout.EAST); // 동쪽에 배치
+        contentPane.add(bufferScroll, BorderLayout.CENTER); // 중앙에 배치
     }
 
     // 이벤트 리스너
@@ -157,40 +161,53 @@ public class MyFrame extends JFrame {
             equationNumber = Integer.parseInt(settingDialog.getInputEquationNumber()); // equationNumber 받아오는 함수 호출
 
             // buffer size만큼 공간 만들기
+            bufferOuterBox = new JPanel[bufferSize];
             bufferBox = new JLabel[bufferSize];
             for(int i=0; i<bufferSize; i++){
+                bufferOuterBox[i] = new JPanel(new FlowLayout(FlowLayout.LEFT));
                 // 번호 출력해주기
                 bufferBox[i] = new JLabel("(" + (i+1) + ") ");
                 // 배경색이 출력되도록 불투명성 설정
-                bufferBox[i].setOpaque(true);
+                bufferOuterBox[i].setOpaque(true);
+                //bufferBox[i].setOpaque(true);
                 // 폰트 설정
                 bufferBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
+
                 // 패널에 붙이기
-                bufferPanel.add(bufferBox[i]);
+                bufferOuterBox[i].add(bufferBox[i]);
+                bufferPanel.add(bufferOuterBox[i]);
             }
             // equation 개수만큼 공간 만들기
+            produceOuterBox = new JPanel[equationNumber];
+            consumeOuterBox = new JPanel[equationNumber];
             produceBox = new JLabel[equationNumber];
             consumeBox = new JLabel[equationNumber];
             for(int i=0; i<equationNumber; i++){
+                produceOuterBox[i] = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                consumeOuterBox[i] = new JPanel(new FlowLayout(FlowLayout.LEFT));
                 // 번호 출력해주기
                 produceBox[i] = new JLabel("(" + (i+1) + ") ");
                 consumeBox[i] = new JLabel("(" + (i+1) + ") ");
                 // 배경색이 출력되도록 불투명성 설정
-                produceBox[i].setOpaque(true);
-                consumeBox[i].setOpaque(true);
+                produceOuterBox[i].setOpaque(true);
+                consumeOuterBox[i].setOpaque(true);
+//                produceBox[i].setOpaque(true);
+//                consumeBox[i].setOpaque(true);
                 // 폰트 설정
                 produceBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
                 consumeBox[i].setFont(new Font("Arial", Font.PLAIN, 20));
                 // 패널에 붙이기
-                producePanel.add(produceBox[i]);
-                consumePanel.add(consumeBox[i]);
+                produceOuterBox[i].add(produceBox[i]);
+                consumeOuterBox[i].add(consumeBox[i]);
+                producePanel.add(produceOuterBox[i]);
+                consumePanel.add(consumeOuterBox[i]);
             }
 
             // 공유메모리, 생산자, 소비자 스레드 생성
             // 여기서 myFrame을 매개변수로 전달해주기 위해서 myFrame을 static 변수로 선언해놓음
-            sharedMemory = new SharedMemory(myFrame, equationNumber, bufferSize, bufferBox);
-            producerThread = new ProducerThread(myFrame, sharedMemory, produceBox);
-            consumerThread = new ConsumerThread(myFrame, sharedMemory, consumeBox);
+            sharedMemory = new SharedMemory(myFrame, equationNumber, bufferSize, bufferBox, bufferOuterBox);
+            producerThread = new ProducerThread(myFrame, sharedMemory, produceBox, produceOuterBox);
+            consumerThread = new ConsumerThread(myFrame, sharedMemory, consumeBox, consumeOuterBox);
 
             // 자식 컴포넌트 다시 배치
             contentPane.revalidate();

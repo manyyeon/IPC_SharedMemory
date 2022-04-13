@@ -8,6 +8,7 @@ import java.awt.*;
 class ConsumerThread extends Thread {
     MyFrame myFrame; // 화면
     SharedMemory sharedMemory; // 공유 메모리
+    JPanel [] consumeOuterBox; // consumBox를 담는 공간
     JLabel [] consumeBox; // 식 소비 공간
 
     String [] consumingProblem; // 계산하는 수식
@@ -16,10 +17,17 @@ class ConsumerThread extends Thread {
     static Stack<Double> doubleStack; // 숫자 스택
     static Stack<String> strStack; // 연산자 스택
 
-    public ConsumerThread(MyFrame myFrame, SharedMemory sharedMemory, JLabel [] consumeBox){
+    // 자동 스크롤을 구현하기 위한 변수
+    // scrollLength 값을 올려주면서 스크롤 위치값에 설정해줌
+    int scrollLength = 0;
+
+    String showConsumeProblem = ""; // 현재 계산한 사칙연산을 띄워주기 위한 문자열 변수
+
+    public ConsumerThread(MyFrame myFrame, SharedMemory sharedMemory, JLabel [] consumeBox, JPanel [] consumeOuterBox){
         this.myFrame = myFrame; // 화면 가져오기
         this.sharedMemory = sharedMemory; // 공유 메모리 가져오기
         this.consumeBox = consumeBox; // 계산결과 띄워주는 공간 가져오기
+        this.consumeOuterBox = consumeOuterBox;
     }
 
     // 우선순위 반환 함수
@@ -93,36 +101,40 @@ class ConsumerThread extends Thread {
     public void run() {
         // 자동 스크롤을 구현하기 위한 변수
         // scrollLength 값을 올려주면서 스크롤 위치값에 설정해줌
-        int scrollLength = 0;
+        scrollLength = 0;
         // 설정된 식 개수만큼 다 계산할 때까지 반복
         for(int i = 0; i<sharedMemory.equationNumber; i++) {
             try {
-                sleep(100); // 시간 지연
+                sleep(10); // 시간 지연
                 // 공유 메모리 버퍼에서 계산할 식 가져오기
-                consumingProblem = sharedMemory.consume();
+                sharedMemory.consume();
+                consumingProblem = sharedMemory.consumingProblem;
                 // 사칙연산 계산하는 함수 호출
                 consumeProblem();
                 // 화면의 consume 부분에 계산결과 띄워주기
-                String tmpProblem = "";
-                tmpProblem += "(";
-                tmpProblem += i+1; // 몇번째 계산결과인지 표시
-                tmpProblem += ") ";
+                showConsumeProblem = "";
+                showConsumeProblem += "(";
+                showConsumeProblem += i+1; // 몇번째 계산결과인지 표시
+                showConsumeProblem += ") ";
                 // 받아온 식을 tmpProblem에 연결
                 for (int j = 0; j < consumingProblem.length; j++) {
-                    tmpProblem += consumingProblem[j];
+                    showConsumeProblem += consumingProblem[j];
                 }
                 // 계산 결과도 연결
-                tmpProblem += " = ";
-                tmpProblem += ans;
+                showConsumeProblem += " = ";
+                showConsumeProblem += ans;
                 // 소비 공간 해당 번호 문자열을 tmpProblem으로 변경
-                consumeBox[i].setText(tmpProblem);
+                consumeBox[i].setText(showConsumeProblem);
 
                 // 배경 색 변경(계산 다 끝낸 식 초록색으로 칠해주기)
-                consumeBox[i].setBackground(new Color(0, 255, 0));
+                consumeOuterBox[i].setBackground(new Color(0,255,0));
+                //consumeBox[i].setBackground(new Color(0, 255, 0));
 
-                // 자동 스크롤
-                scrollLength += 20;
-                myFrame.consumeScroll.getVerticalScrollBar().setValue(myFrame.consumeScroll.getVerticalScrollBar().getMinimum() + scrollLength);
+                if(i>=10){
+                    // 자동 스크롤
+                    scrollLength += (myFrame.consumeScroll.getVerticalScrollBar().getMaximum() - myFrame.consumeScroll.getVerticalScrollBar().getMinimum()) / sharedMemory.equationNumber;
+                    myFrame.consumeScroll.getVerticalScrollBar().setValue(myFrame.consumeScroll.getVerticalScrollBar().getMinimum() + scrollLength);
+                }
             } catch (InterruptedException e) {
                 return;
             }
