@@ -140,12 +140,15 @@ START 버튼을 눌러서 시작한다.
 
 <img width="396" alt="image" src="https://user-images.githubusercontent.com/87538540/174727639-0380e48c-ad5d-488f-98d4-e072bdb456ac.png">
 
+<img width="396" alt="image" src="https://user-images.githubusercontent.com/87538540/174727830-4e6a9641-5ab2-46d1-9743-6e541764bcce.png">
 
-
-<img width="396" alt="image" src="https://user-images.githubusercontent.com/87538540/174727639-0380e48c-ad5d-488f-98d4-e072bdb456ac.png">
+<img width="359" alt="image" src="https://user-images.githubusercontent.com/87538540/174727839-9b4377b5-2e6c-460c-a5f2-c0a6a21ae26f.png">
    
-계산이 끝나면 자동으로 결과 창을 띄워서 결과를 출력해준다. 
+계산이 끝나면 자동으로 결과 창을 띄워서 결과를 출력해준다.
+
+<img width="358" alt="image" src="https://user-images.githubusercontent.com/87538540/174727872-c9407138-7f15-43f3-b616-919ee7f008f8.png">
+
 INITIALIZATION 버튼을 눌러서 초기화해주면 새로 SETTING하고 실행할 수 있다.
- 
- 
-![image](https://user-images.githubusercontent.com/87538540/174726892-67548be2-6257-4b34-a1fe-68f52f69b43c.png)
+
+<img width="367" alt="image" src="https://user-images.githubusercontent.com/87538540/174727889-344e9815-afd9-466c-a3b5-c124330aae15.png">
+
